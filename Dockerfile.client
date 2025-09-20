@@ -18,8 +18,8 @@ RUN cd client && yarn install --frozen-lockfile
 COPY client ./client
 COPY types ./types
 
-# ビルド実行
-RUN cd client && yarn build
+# ビルド実行（メモリ制限を増やす）
+RUN cd client && NODE_OPTIONS="--max_old_space_size=4096" yarn build
 
 # Nginx本番環境
 FROM nginx:alpine
