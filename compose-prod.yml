@@ -1,0 +1,33 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: skyoffice-server-prod
+    restart: unless-stopped
+    ports:
+      - "2567:2567"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - skyoffice-network
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: skyoffice-client-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - skyoffice-network
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+
+
+networks:
+  skyoffice-network:
+    driver: bridge
