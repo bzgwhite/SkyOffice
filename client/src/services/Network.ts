@@ -33,7 +33,7 @@ export default class Network {
     const protocol = window.location.protocol.replace('http', 'ws')
     const endpoint =
       process.env.NODE_ENV === 'production'
-        ? import.meta.env.VITE_SERVER_URL
+        ? `${protocol}//${window.location.host}`
         : `${protocol}//${window.location.hostname}:2567`
     this.client = new Client(endpoint)
     this.joinLobbyRoom().then(() => {
@@ -99,7 +99,7 @@ export default class Network {
     this.webRTC = new WebRTC(this.mySessionId, this)
 
     // new instance added to the players MapSchema
-    this.room.state.players.onAdd = (player: IPlayer, key: string) => {
+    this.room.state.players.onAdd = (player: any, key: string) => {
       if (key === this.mySessionId) return
 
       // track changes on every child object inside the players MapSchema

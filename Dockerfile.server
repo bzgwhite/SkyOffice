@@ -1,0 +1,40 @@
+# サーバー用本番環境Dockerfile
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# ビルドに必要なパッケージをインストール
+RUN apk add --no-cache python3 make g++
+
+# 依存関係のコピーとインストール
+COPY package.json yarn.lock ./
+COPY types/package.json ./types/
+RUN yarn install --frozen-lockfile
+
+# ソースコードをコピー
+COPY . .
+
+# TypeScriptビルド
+RUN npx tsc --project server/tsconfig.server.json
+
+# 本番用イメージ
+FROM node:20-alpine
+
+WORKDIR /app
+
+# 本番実行に必要なパッケージをインストール
+RUN apk add --no-cache python3 make g++
+
+# 本番用依存関係のみインストール
+COPY package.json yarn.lock ./
+COPY types/package.json ./types/
+RUN yarn install --production --frozen-lockfile && \
+    apk del python3 make g++
+
+# ビルド済みファイルをコピー
+COPY --from=builder /app/server/lib ./server/lib
+COPY --from=builder /app/types ./types
+
+EXPOSE 2567
+
+CMD ["node", "server/lib/server/index.js"]

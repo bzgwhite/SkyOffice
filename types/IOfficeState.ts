@@ -1,12 +1,22 @@
 import { Schema, ArraySchema, SetSchema, MapSchema } from '@colyseus/schema'
 
-export interface IPlayer extends Schema {
+export interface IPlayer {
   name: string
   x: number
   y: number
   anim: string
   readyToConnect: boolean
   videoConnected: boolean
+}
+
+export interface IPlayerSchema extends Schema {
+  name: string
+  x: number
+  y: number
+  anim: string
+  readyToConnect: boolean
+  videoConnected: boolean
+  onChange?: (changes: any[]) => void
 }
 
 export interface IComputer extends Schema {
@@ -25,7 +35,7 @@ export interface IChatMessage extends Schema {
 }
 
 export interface IOfficeState extends Schema {
-  players: MapSchema<IPlayer>
+  players: MapSchema<IPlayerSchema>
   computers: MapSchema<IComputer>
   whiteboards: MapSchema<IWhiteboard>
   chatMessages: ArraySchema<IChatMessage>

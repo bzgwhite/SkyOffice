@@ -1,0 +1,90 @@
+# クライアント用本番環境Dockerfile
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# 依存関係のコピーとインストール
+COPY client/package.json client/yarn.lock ./client/
+COPY types/package.json ./types/
+COPY package.json yarn.lock ./
+
+# typesの依存関係をインストール
+RUN cd types && yarn install --frozen-lockfile
+
+# clientの依存関係をインストール
+RUN cd client && yarn install --frozen-lockfile
+
+# ソースコードをコピー
+COPY client ./client
+COPY types ./types
+
+# ビルド実行
+RUN cd client && yarn build
+
+# Nginx本番環境
+FROM nginx:alpine
+
+# Nginxカスタム設定
+COPY <<EOF /etc/nginx/conf.d/default.conf
+server {
+    listen 80;
+    server_name localhost;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Gzip圧縮を有効化
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+    # キャッシュ設定
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Colyseusサーバーへのプロキシ設定
+    location /matchmake/ {
+        proxy_pass http://skyoffice-server-prod:2567;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
+        proxy_read_timeout 86400;
+    }
+
+    # WebSocket接続用のプロキシ設定（動的なパス）
+    location ~ ^/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)$ {
+        proxy_pass http://skyoffice-server-prod:2567;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
+        proxy_read_timeout 86400;
+    }
+
+    # SPAルーティング対応
+    location / {
+        try_files \$uri \$uri/ /index.html;
+    }
+
+    # セキュリティヘッダー
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+}
+EOF
+
+# ビルド済みファイルをコピー
+COPY --from=builder /app/client/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
