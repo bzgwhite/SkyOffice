@@ -12,7 +12,7 @@ COPY package.json yarn.lock ./
 RUN cd types && yarn install --frozen-lockfile
 
 # clientの依存関係をインストール
-RUN cd client && yarn install --frozen-lockfile
+RUN cd client && yarn install
 
 # ソースコードをコピー
 COPY client ./client
