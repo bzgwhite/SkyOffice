@@ -20,15 +20,11 @@ services:
     restart: unless-stopped
     expose:
       - "80"
-    volumes:
-      - /usr/share/nginx/html
-    networks:
-      - default
     environment:
       - VIRTUAL_HOST=skyoffice.breezegroup.jp
 
 
 networks:
   default:
-    external:
-      name: nginx-proxy_default
+    name: nginx-proxy_default
+    external: true
