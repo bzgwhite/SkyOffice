@@ -7,8 +7,6 @@ services:
     restart: unless-stopped
     ports:
       - "2567:2567"
-    networks:
-      - default
     environment:
       - NODE_ENV=production
 
@@ -28,3 +26,4 @@ networks:
   default:
     name: nginx-proxy_default
     external: true
+
