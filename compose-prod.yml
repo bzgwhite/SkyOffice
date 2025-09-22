@@ -20,6 +20,7 @@ services:
     restart: unless-stopped
     networks:
       - skyoffice-network
+      - nginx-proxy_default
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_HOST=${LETSENCRYPT_HOST}
@@ -27,5 +28,7 @@ services:
 
 
 networks:
+  nginx-proxy_default:
+    external: true
   skyoffice-network:
     driver: bridge
