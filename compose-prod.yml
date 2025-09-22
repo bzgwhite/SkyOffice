@@ -21,6 +21,8 @@ services:
     environment:
       - VIRTUAL_HOST=skyoffice.breezegroup.jp
       - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=skyoffice.breezegroup.jp
+      - LETSENCRYPT_EMAIL=admin@breezegroup.jp
 
 
 # networks:
