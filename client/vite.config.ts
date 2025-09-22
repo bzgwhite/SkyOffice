@@ -18,20 +18,22 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor'
-            }
             if (id.includes('phaser')) {
               return 'phaser-vendor'
             }
             if (id.includes('colyseus')) {
               return 'colyseus-vendor'
             }
-            if (id.includes('@mui') || id.includes('@emotion')) {
-              return 'mui-vendor'
-            }
-            if (id.includes('@reduxjs') || id.includes('react-redux')) {
-              return 'redux-vendor'
+            if (
+              id.includes('react') ||
+              id.includes('react-dom') ||
+              id.includes('@mui') ||
+              id.includes('@emotion') ||
+              id.includes('styled-components') ||
+              id.includes('@reduxjs') ||
+              id.includes('react-redux')
+            ) {
+              return 'react-vendor'
             }
             // その他のnode_modulesは小さなチャンクに分割
             return 'vendor'
