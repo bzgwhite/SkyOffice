@@ -17,13 +17,14 @@ services:
     container_name: skyoffice-client-prod
     restart: unless-stopped
     expose:
-      - "80"
+      - "3000"
     environment:
       - VIRTUAL_HOST=skyoffice.breezegroup.jp
+      - VIRTUAL_PORT=3000
 
 
-networks:
-  default:
-    name: nginx-proxy_default
-    external: true
+# networks:
+#   default:
+#     name: nginx-proxy_default
+#     external: true
 

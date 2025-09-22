@@ -1,7 +1,36 @@
-# 最小限のテスト用クライアント
-FROM nginx:alpine
+# マルチステージビルド: ビルド用
+FROM node:20-alpine AS builder
 
-# デフォルトページを置き換え
-RUN echo '<h1>SkyOffice Test - Working!</h1>' > /usr/share/nginx/html/index.html
+WORKDIR /app
 
-EXPOSE 80
+# 依存関係のコピーとインストール
+COPY client/package.json client/yarn.lock ./
+COPY types/package.json ../types/
+RUN yarn install
+
+# typesの依存関係もインストール
+WORKDIR /types
+RUN yarn install
+
+# ソースコードのコピー
+WORKDIR /app
+COPY client/ .
+COPY types/ ../types/
+
+# 本番用ビルド
+RUN yarn build
+
+# 本番用: 軽量な静的ファイルサーバー
+FROM node:20-alpine
+
+WORKDIR /app
+
+# serveをインストール
+RUN npm install -g serve
+
+# ビルドされた静的ファイルをコピー
+COPY --from=builder /app/dist .
+
+EXPOSE 3000
+
+CMD ["serve", "-s", ".", "-l", "3000"]
