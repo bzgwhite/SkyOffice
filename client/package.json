@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "NODE_OPTIONS='--max_old_space_size=8192 --optimize-for-size' tsc && NODE_OPTIONS='--max_old_space_size=8192 --optimize-for-size' vite build",
+    "build": "NODE_OPTIONS='--max_old_space_size=8192' tsc && NODE_OPTIONS='--max_old_space_size=8192' vite build",
     "preview": "vite preview"
   },
   "dependencies": {

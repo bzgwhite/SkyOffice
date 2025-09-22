@@ -19,10 +19,10 @@ COPY client ./client
 COPY types ./types
 
 # TypeScriptコンパイル（段階的ビルド）
-RUN cd client && NODE_OPTIONS="--max_old_space_size=8192 --optimize-for-size" npx tsc
+RUN cd client && NODE_OPTIONS="--max_old_space_size=8192" npx tsc
 
 # Viteビルド（段階的ビルド）
-RUN cd client && NODE_OPTIONS="--max_old_space_size=8192 --optimize-for-size" npx vite build
+RUN cd client && NODE_OPTIONS="--max_old_space_size=8192" npx vite build
 
 # Nginx本番環境
 FROM nginx:alpine
