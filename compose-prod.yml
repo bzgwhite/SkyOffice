@@ -5,16 +5,12 @@ services:
       dockerfile: Dockerfile.server
     container_name: skyoffice-server-prod
     restart: unless-stopped
-    expose:
-      - "2567"
+    ports:
+      - "2567:2567"
     networks:
       - default
     environment:
       - NODE_ENV=production
-      - VIRTUAL_HOST=api.skyoffice.breezegroup.jp
-      - VIRTUAL_PORT=2567
-      - LETSENCRYPT_HOST=api.skyoffice.breezegroup.jp
-      - LETSENCRYPT_EMAIL=admin@breezegroup.jp
 
   client:
     build:
