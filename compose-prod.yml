@@ -20,13 +20,10 @@ services:
     restart: unless-stopped
     expose:
       - "80"
-    volumes:
-      - /usr/share/nginx/html
     networks:
       - default
     environment:
       - VIRTUAL_HOST=skyoffice.breezegroup.jp
-      - VIRTUAL_PORT=80
       - LETSENCRYPT_HOST=skyoffice.breezegroup.jp
       - LETSENCRYPT_EMAIL=admin@breezegroup.jp
 
