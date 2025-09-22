@@ -5,12 +5,16 @@ services:
       dockerfile: Dockerfile.server
     container_name: skyoffice-server-prod
     restart: unless-stopped
-    ports:
-      - "2567:2567"
+    expose:
+      - "2567"
     networks:
       - default
     environment:
       - NODE_ENV=production
+      - VIRTUAL_HOST=${SERVER_VIRTUAL_HOST}
+      - VIRTUAL_PORT=2567
+      - LETSENCRYPT_HOST=${SERVER_LETSENCRYPT_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
 
   client:
     build:
