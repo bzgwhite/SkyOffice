@@ -1,34 +1,17 @@
-# クライアント用本番環境Dockerfile
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# 依存関係のコピーとインストール
-COPY client/package.json client/yarn.lock ./client/
-COPY types/package.json ./types/
-COPY package.json yarn.lock ./
-
-# typesの依存関係をインストール
-RUN cd types && yarn install --frozen-lockfile
-
-# clientの依存関係をインストール
-RUN cd client && yarn install
-
-# ソースコードをコピー
-COPY client ./client
-COPY types ./types
-
-# TypeScriptコンパイル（段階的ビルド）
-RUN cd client && NODE_OPTIONS="--max_old_space_size=8192" npx tsc
-
-# Viteビルド（段階的ビルド）
-RUN cd client && NODE_OPTIONS="--max_old_space_size=8192" npx vite build
-
-# Nginx本番環境
+# テスト用シンプルなクライアント
 FROM nginx:alpine
 
-# ビルド済みファイルをコピー
-COPY --from=builder /app/client/dist /usr/share/nginx/html
+# テスト用のシンプルなHTMLページを作成
+RUN echo '<!DOCTYPE html>
+<html>
+<head>
+    <title>SkyOffice Test</title>
+</head>
+<body>
+    <h1>SkyOffice is working!</h1>
+    <p>This is a test page to verify nginx-proxy configuration.</p>
+</body>
+</html>' > /usr/share/nginx/html/index.html
 
 # ACME challengeディレクトリを作成
 RUN mkdir -p /usr/share/nginx/html/.well-known/acme-challenge
