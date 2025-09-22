@@ -27,8 +27,8 @@ RUN cd client && NODE_OPTIONS="--max_old_space_size=8192" npx vite build
 # Nginx本番環境
 FROM nginx:alpine
 
-# Nginxカスタム設定
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Nginxシンプル設定
+COPY nginx-simple.conf /etc/nginx/conf.d/default.conf
 
 # ビルド済みファイルをコピー
 COPY --from=builder /app/client/dist /usr/share/nginx/html
