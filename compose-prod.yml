@@ -20,12 +20,17 @@ services:
     restart: unless-stopped
     expose:
       - "80"
+    volumes:
+      - acme-challenge:/usr/share/nginx/html
     networks:
       - default
     environment:
       - VIRTUAL_HOST=skyoffice.breezegroup.jp
       - LETSENCRYPT_HOST=skyoffice.breezegroup.jp
       - LETSENCRYPT_EMAIL=admin@breezegroup.jp
+
+volumes:
+  acme-challenge:
 
 
 networks:
