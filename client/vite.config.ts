@@ -16,26 +16,14 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
+        // 安全なチャンク分離: 大きなライブラリのみ分離
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
+            // Phaserは大きいので分離（依存関係が少ない）
             if (id.includes('phaser')) {
-              return 'phaser-vendor'
+              return 'phaser'
             }
-            if (id.includes('colyseus')) {
-              return 'colyseus-vendor'
-            }
-            if (
-              id.includes('react') ||
-              id.includes('react-dom') ||
-              id.includes('@mui') ||
-              id.includes('@emotion') ||
-              id.includes('styled-components') ||
-              id.includes('@reduxjs') ||
-              id.includes('react-redux')
-            ) {
-              return 'react-vendor'
-            }
-            // その他のnode_modulesは小さなチャンクに分割
+            // その他はすべて一つのvendorチャンクに
             return 'vendor'
           }
         },

@@ -31,10 +31,19 @@ export default class Network {
 
   constructor() {
     const protocol = window.location.protocol.replace('http', 'ws')
-    const endpoint =
-      process.env.NODE_ENV === 'production'
-        ? `${protocol}//${window.location.host}`
-        : `${protocol}//${window.location.hostname}:2567`
+
+    // ローカル環境の判定をより確実に
+    const isLocal =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname.includes('192.168.') ||
+      window.location.hostname.includes('10.0.')
+
+    const endpoint = isLocal
+      ? `${protocol}//${window.location.hostname}:2567`
+      : `${protocol}//api.skyoffice.breezegroup.jp`
+
+    console.log('WebSocket endpoint:', endpoint)
     this.client = new Client(endpoint)
     this.joinLobbyRoom().then(() => {
       store.dispatch(setLobbyJoined(true))
