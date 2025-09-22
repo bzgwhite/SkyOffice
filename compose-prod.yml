@@ -28,7 +28,8 @@ services:
 
 
 networks:
-  nginx-proxy_default:
-    external: true
+  default:
+    external:
+      name: nginx-proxy_default
   skyoffice-network:
     driver: bridge
