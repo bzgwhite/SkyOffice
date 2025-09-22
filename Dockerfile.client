@@ -2,16 +2,16 @@
 FROM nginx:alpine
 
 # テスト用のシンプルなHTMLページを作成
-RUN echo '<!DOCTYPE html>
-<html>
-<head>
-    <title>SkyOffice Test</title>
-</head>
-<body>
-    <h1>SkyOffice is working!</h1>
-    <p>This is a test page to verify nginx-proxy configuration.</p>
-</body>
-</html>' > /usr/share/nginx/html/index.html
+RUN echo '<!DOCTYPE html>' > /usr/share/nginx/html/index.html && \
+    echo '<html>' >> /usr/share/nginx/html/index.html && \
+    echo '<head>' >> /usr/share/nginx/html/index.html && \
+    echo '    <title>SkyOffice Test</title>' >> /usr/share/nginx/html/index.html && \
+    echo '</head>' >> /usr/share/nginx/html/index.html && \
+    echo '<body>' >> /usr/share/nginx/html/index.html && \
+    echo '    <h1>SkyOffice is working!</h1>' >> /usr/share/nginx/html/index.html && \
+    echo '    <p>This is a test page to verify nginx-proxy configuration.</p>' >> /usr/share/nginx/html/index.html && \
+    echo '</body>' >> /usr/share/nginx/html/index.html && \
+    echo '</html>' >> /usr/share/nginx/html/index.html
 
 # ACME challengeディレクトリを作成
 RUN mkdir -p /usr/share/nginx/html/.well-known/acme-challenge
