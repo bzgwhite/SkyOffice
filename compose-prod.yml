@@ -9,8 +9,6 @@ services:
       - "2567:2567"
     environment:
       - NODE_ENV=production
-    networks:
-      - skyoffice-network
 
   client:
     build:
@@ -18,9 +16,6 @@ services:
       dockerfile: Dockerfile.client
     container_name: skyoffice-client-prod
     restart: unless-stopped
-    networks:
-      - skyoffice-network
-      - nginx-proxy_default
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_HOST=${LETSENCRYPT_HOST}
@@ -31,5 +26,3 @@ networks:
   default:
     external:
       name: nginx-proxy_default
-  skyoffice-network:
-    driver: bridge
