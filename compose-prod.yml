@@ -20,6 +20,8 @@ services:
     restart: unless-stopped
     expose:
       - "80"
+    volumes:
+      - /usr/share/nginx/html
     networks:
       - default
     environment:
